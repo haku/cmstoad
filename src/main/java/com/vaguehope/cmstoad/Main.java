@@ -2,7 +2,6 @@ package com.vaguehope.cmstoad;
 
 import java.io.File;
 import java.io.PrintStream;
-import java.security.Security;
 
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
@@ -14,7 +13,7 @@ public final class Main {
 	}
 
 	public static void main (String[] rawArgs) {
-		Security.addProvider(C.PROVIDER);
+		ProviderHelper.initProvider();
 		final PrintStream out = System.out;
 		final PrintStream err = System.err;
 		final File dir = new File(".");
