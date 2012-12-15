@@ -23,7 +23,7 @@ import org.kohsuke.args4j.CmdLineException;
 public class Encrypt implements CliAction {
 
 	private final Map<String, PublicKey> keys;
-	private List<File> sourceFiles;
+	private final List<File> sourceFiles;
 
 	public Encrypt (Map<String, PublicKey> keys, List<File> files) {
 		this.keys = keys;

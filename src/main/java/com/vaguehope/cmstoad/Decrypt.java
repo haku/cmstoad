@@ -25,7 +25,7 @@ import org.kohsuke.args4j.CmdLineException;
 public class Decrypt implements CliAction {
 
 	private final Map<String, PrivateKey> keys;
-	private List<File> sourceFiles;
+	private final List<File> sourceFiles;
 
 	public Decrypt (Map<String, PrivateKey> keys, List<File> files) {
 		this.keys = keys;
