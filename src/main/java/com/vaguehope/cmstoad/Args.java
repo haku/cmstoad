@@ -2,9 +2,10 @@ package com.vaguehope.cmstoad;
 
 import java.io.File;
 import java.io.IOException;
+import java.security.Key;
+import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -19,7 +20,8 @@ public class Args {
 
 	@Option(name = "--name", aliases = "-n", metaVar = "my_key", usage = "name for the generated keypair") private String name;
 	@Option(name = "--keysize", aliases = "-s", metaVar = "4096", usage = "length of the generated private key") private int keysize;
-	@Option(name = "--publickey", aliases = "-p", metaVar = "my_key.public.pem", multiValued = true, usage = "public key to encrypt file to") private List<String> publicKeyPaths;
+	@Option(name = "--publickey", aliases = "-u", metaVar = "my_key.public.pem", multiValued = true, usage = "public key to encrypt file to") private List<String> publicKeyPaths;
+	@Option(name = "--privatekey", aliases = "-i", metaVar = "my_key.private.pem", multiValued = true, usage = "private key to decrypt file with") private List<String> privateKeyPaths;
 
 	public Action getAction () {
 		return this.action;
@@ -44,14 +46,18 @@ public class Args {
 
 	public Map<String, PublicKey> getPublicKeys (boolean required) throws CmdLineException, IOException {
 		if (required && (this.publicKeyPaths == null || this.publicKeyPaths.isEmpty())) throw new CmdLineException(null, "At least one public key is required.");
-		List<File> files = pathsToFiles(this.publicKeyPaths);
+		return readKeys(PublicKey.class, this.publicKeyPaths);
+	}
+
+	public Map<String, PrivateKey> getPrivteKeys (boolean required) throws CmdLineException, IOException {
+		if (required && (this.privateKeyPaths == null || this.privateKeyPaths.isEmpty())) throw new CmdLineException(null, "At least one private key is required.");
+		return readKeys(PrivateKey.class, this.privateKeyPaths);
+	}
+
+	public <T extends Key> Map<String, T> readKeys (Class<T> type, List<String> paths) throws CmdLineException, IOException {
+		List<File> files = pathsToFiles(paths);
 		checkFilesExist(files);
-		Map<String, PublicKey> keys = new HashMap<String, PublicKey>();
-		for (File file : files) {
-			PublicKey key = KeyHelper.readKey(file, PublicKey.class);
-			keys.put(KeyHelper.keyBaseName(file), key);
-		}
-		return keys;
+		return KeyHelper.readKeys(files, type);
 	}
 
 	private static List<File> pathsToFiles (List<String> paths) {

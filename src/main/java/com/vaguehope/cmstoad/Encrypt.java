@@ -38,7 +38,7 @@ public class Encrypt implements CliAction {
 	public void run (PrintStream out, PrintStream err) throws IOException, CMSException, OperatorCreationException {
 		File outputDir = new File(".");
 		for (File sourceFile : this.sourceFiles) {
-			File sinkFile = new File(outputDir, sourceFile.getName() + ".cms");
+			File sinkFile = new File(outputDir, sourceFile.getName() + C.ENCRYPTED_FILE_EXT);
 			if (sinkFile.exists()) throw new IOException("File already exists: " + sinkFile.getAbsolutePath());
 			out.println("Output: " + sinkFile.getPath());
 			encrypt(sourceFile, sinkFile);
@@ -67,7 +67,7 @@ public class Encrypt implements CliAction {
 				new JceCMSContentEncryptorBuilder(C.DEFAULT_ENCRYPTION_OID).setProvider(C.PROVIDER).build()
 				);
 		try {
-			byte[] buffer = new byte[8192];
+			byte[] buffer = new byte[C.DEFAULT_COPY_BUFFER_SIZE];
 			int bytesRead;
 			while ((bytesRead = source.read(buffer)) != -1) {
 				target.write(buffer, 0, bytesRead);

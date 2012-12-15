@@ -5,6 +5,12 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.security.Key;
+import java.security.KeyPair;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.bouncycastle.openssl.PEMReader;
 import org.bouncycastle.openssl.PEMWriter;
@@ -29,11 +35,26 @@ public final class KeyHelper {
 		PEMReader r = new PEMReader(new FileReader(f));
 		try {
 			Object obj = r.readObject();
+			if (type.isAssignableFrom(PrivateKey.class)) {
+				if (obj instanceof KeyPair) return (T) ((KeyPair) obj).getPrivate();
+			}
+			else if (type.isAssignableFrom(PublicKey.class)) {
+				if (obj instanceof KeyPair) return (T) ((KeyPair) obj).getPublic();
+			}
 			return type.cast(obj);
 		}
 		finally {
 			r.close();
 		}
+	}
+
+	public static <T extends Key> Map<String, T> readKeys (List<File> files, Class<T> type) throws IOException {
+		Map<String, T> keys = new HashMap<String, T>();
+		for (File file : files) {
+			T key = KeyHelper.readKey(file, type);
+			keys.put(KeyHelper.keyBaseName(file), key);
+		}
+		return keys;
 	}
 
 	public static String keyBaseName (File file) {

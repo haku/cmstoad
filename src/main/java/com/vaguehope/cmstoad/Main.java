@@ -18,7 +18,6 @@ public final class Main {
 		final PrintStream err = System.err;
 		final Args args = new Args();
 		final CmdLineParser parser = new CmdLineParser(args);
-		parser.setUsageWidth(80);
 		try {
 			parser.parseArgument(rawArgs);
 			switch (args.getAction()) {
@@ -28,8 +27,10 @@ public final class Main {
 				case ENCRYPT:
 					new Encrypt(args).run(out, err);
 					break;
-				case INFO:
 				case DECRYPT:
+					new Decrypt(args).run(out, err);
+					break;
+				case INFO:
 					System.err.println("Files: " + args.getFiles(false, false));
 					System.err.println("TODO: " + args.getAction());
 					break;
