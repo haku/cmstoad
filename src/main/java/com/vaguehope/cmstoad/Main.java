@@ -35,12 +35,12 @@ public final class Main {
 					break;
 				case HELP:
 				default:
-					fullHelp(parser);
+					fullHelp(parser, err);
 			}
 		}
 		catch (CmdLineException e) {
 			err.println(e.getMessage());
-			shortHelp(parser);
+			shortHelp(parser, err);
 			return;
 		}
 		catch (Exception e) {
@@ -49,16 +49,16 @@ public final class Main {
 		}
 	}
 
-	private static void shortHelp (CmdLineParser parser) {
-		System.err.print("Usage: ");
-		System.err.print(C.APPNAME);
+	private static void shortHelp (CmdLineParser parser, PrintStream ps) {
+		ps.print("Usage: ");
+		ps.print(C.APPNAME);
 		parser.printSingleLineUsage(System.err);
-		System.err.println();
+		ps.println();
 	}
 
-	private static void fullHelp (CmdLineParser parser) {
-		shortHelp(parser);
-		parser.printUsage(System.err);
-		System.err.println();
+	private static void fullHelp (CmdLineParser parser, PrintStream ps) {
+		shortHelp(parser, ps);
+		parser.printUsage(ps);
+		ps.println();
 	}
 }
