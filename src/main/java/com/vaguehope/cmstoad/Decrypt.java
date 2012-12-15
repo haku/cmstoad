@@ -2,7 +2,6 @@ package com.vaguehope.cmstoad;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -83,7 +82,7 @@ public class Decrypt implements CliAction {
 		}
 	}
 
-	public void decrypt (RecipientInformation ri, OutputStream sink, PrivateKey key) throws CMSException, IOException, FileNotFoundException {
+	public void decrypt (RecipientInformation ri, OutputStream sink, PrivateKey key) throws CMSException, IOException {
 		CMSTypedStream cmsTs = ri.getContentStream(new JceKeyTransEnvelopedRecipient(key).setProvider(C.PROVIDER));
 		InputStream source = cmsTs.getContentStream();
 		try {
