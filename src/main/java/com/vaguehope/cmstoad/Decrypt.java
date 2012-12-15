@@ -26,21 +26,22 @@ public class Decrypt implements CliAction {
 
 	private final Map<String, PrivateKey> keys;
 	private final List<File> sourceFiles;
+	private final File dir;
 
-	public Decrypt (Map<String, PrivateKey> keys, List<File> files) {
+	public Decrypt (Map<String, PrivateKey> keys, List<File> files, File dir) {
 		this.keys = keys;
 		this.sourceFiles = files;
+		this.dir = dir;
 	}
 
-	public Decrypt (Args args) throws CmdLineException, IOException {
-		this(args.getPrivteKeys(true), args.getFiles(true, true));
+	public Decrypt (Args args, File dir) throws CmdLineException, IOException {
+		this(args.getPrivteKeys(true), args.getFiles(true, true), dir);
 	}
 
 	@Override
 	public void run (PrintStream out, PrintStream err) throws IOException, CMSException, CmdLineException {
-		File outputDir = new File(".");
 		for (File sourceFile : this.sourceFiles) {
-			File sinkFile = new File(outputDir, sourceFile.getName() + C.DECRYPTED_FILE_EXT);
+			File sinkFile = new File(this.dir, sourceFile.getName() + C.DECRYPTED_FILE_EXT);
 			if (sinkFile.exists()) throw new IOException("File already exists: " + sinkFile.getAbsolutePath());
 			out.println("Output: " + sinkFile.getPath());
 			decrypt(sourceFile, sinkFile, out);

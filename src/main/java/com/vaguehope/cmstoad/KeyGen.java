@@ -13,21 +13,22 @@ public class KeyGen implements CliAction {
 
 	private final String name;
 	private final int keysize;
+	private final File dir;
 
-	public KeyGen (String name, int keysize) {
+	public KeyGen (String name, int keysize, File dir) {
 		this.name = name;
 		this.keysize = keysize;
+		this.dir = dir;
 	}
 
-	public KeyGen (Args args) throws CmdLineException {
-		this(args.getName(true), args.getKeysize(true));
+	public KeyGen (Args args, File dir) throws CmdLineException {
+		this(args.getName(true), args.getKeysize(true), dir);
 	}
 
 	@Override
 	public void run (PrintStream out, PrintStream err) throws IOException {
-		File d = new File(".");
 		try {
-			generateKeyPair(this.keysize, this.name, d, out);
+			generateKeyPair(this.keysize, this.name, this.dir, out);
 		}
 		catch (NoSuchAlgorithmException e) {
 			throw new IllegalStateException(e);

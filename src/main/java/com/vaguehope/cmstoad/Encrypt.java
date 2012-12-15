@@ -24,21 +24,22 @@ public class Encrypt implements CliAction {
 
 	private final Map<String, PublicKey> keys;
 	private final List<File> sourceFiles;
+	private final File dir;
 
-	public Encrypt (Map<String, PublicKey> keys, List<File> files) {
+	public Encrypt (Map<String, PublicKey> keys, List<File> files, File dir) {
 		this.keys = keys;
 		this.sourceFiles = files;
+		this.dir = dir;
 	}
 
-	public Encrypt (Args args) throws CmdLineException, IOException {
-		this(args.getPublicKeys(true), args.getFiles(true, true));
+	public Encrypt (Args args, File dir) throws CmdLineException, IOException {
+		this(args.getPublicKeys(true), args.getFiles(true, true), dir);
 	}
 
 	@Override
 	public void run (PrintStream out, PrintStream err) throws IOException, CMSException, OperatorCreationException {
-		File outputDir = new File(".");
 		for (File sourceFile : this.sourceFiles) {
-			File sinkFile = new File(outputDir, sourceFile.getName() + C.ENCRYPTED_FILE_EXT);
+			File sinkFile = new File(this.dir, sourceFile.getName() + C.ENCRYPTED_FILE_EXT);
 			if (sinkFile.exists()) throw new IOException("File already exists: " + sinkFile.getAbsolutePath());
 			out.println("Output: " + sinkFile.getPath());
 			encrypt(sourceFile, sinkFile, out);

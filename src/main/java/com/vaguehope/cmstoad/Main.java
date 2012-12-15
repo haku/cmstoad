@@ -1,5 +1,6 @@
 package com.vaguehope.cmstoad;
 
+import java.io.File;
 import java.io.PrintStream;
 import java.security.Security;
 
@@ -16,19 +17,20 @@ public final class Main {
 		Security.addProvider(C.PROVIDER);
 		final PrintStream out = System.out;
 		final PrintStream err = System.err;
+		final File dir = new File(".");
 		final Args args = new Args();
 		final CmdLineParser parser = new CmdLineParser(args);
 		try {
 			parser.parseArgument(rawArgs);
 			switch (args.getAction()) {
 				case KEYGEN:
-					new KeyGen(args).run(out, err);
+					new KeyGen(args, dir).run(out, err);
 					break;
 				case ENCRYPT:
-					new Encrypt(args).run(out, err);
+					new Encrypt(args, dir).run(out, err);
 					break;
 				case DECRYPT:
-					new Decrypt(args).run(out, err);
+					new Decrypt(args, dir).run(out, err);
 					break;
 				case INFO:
 					new Info(args).run(out, err);
