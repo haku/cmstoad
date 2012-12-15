@@ -31,8 +31,7 @@ public final class Main {
 					new Decrypt(args).run(out, err);
 					break;
 				case INFO:
-					System.err.println("Files: " + args.getFiles(false, false));
-					System.err.println("TODO: " + args.getAction());
+					new Info(args).run(out, err);
 					break;
 				case HELP:
 				default:
