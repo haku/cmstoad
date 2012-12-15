@@ -1,0 +1,28 @@
+== s3cms ==
+
+A quick and ugly utility for working with CMS encrypted files.
+
+== Build ==
+
+<pre>
+mvn clean install assembly:single
+</pre>
+
+== Usage ==
+
+ $ java -jar s3cms.jar args
+
+Run it with action <code>help</code> to get usage help:
+ $ java -jar s3cms.jar help
+
+Generate a key pair called 'foobar' with keylength 2048:
+ $ java -jar s3cms.jar keygen -n foobar -s 2048
+
+Encrypt files against multiple public keys:
+ $ java -jar s3cms.jar encrypt -u desu.public.pem -u foobar.public.pem file1.doc file2.png
+
+Decrypt files using private key:
+ $ java -jar s3cms.jar decrypt -i foobar.private.pem file1.doc.cms file2.png.cms
+
+Show header info for encrypted files:
+ $ java -jar s3cms.jar info file1.doc.cms file2.png.cms
