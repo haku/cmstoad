@@ -1,7 +1,7 @@
 package com.vaguehope.cmstoad;
 
-import java.io.IOException;
 import java.io.PrintStream;
+import java.security.Security;
 
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
@@ -12,7 +12,8 @@ public final class Main {
 		throw new AssertionError();
 	}
 
-	public static void main (String[] rawArgs) throws IOException {
+	public static void main (String[] rawArgs) {
+		Security.addProvider(C.PROVIDER);
 		final PrintStream out = System.out;
 		final PrintStream err = System.err;
 		final Args args = new Args();
@@ -24,10 +25,12 @@ public final class Main {
 				case KEYGEN:
 					new KeyGen(args).run(out, err);
 					break;
-				case INFO:
 				case ENCRYPT:
+					new Encrypt(args).run(out, err);
+					break;
+				case INFO:
 				case DECRYPT:
-					System.err.println("Files: " + args.getFiles());
+					System.err.println("Files: " + args.getFiles(false, false));
 					System.err.println("TODO: " + args.getAction());
 					break;
 				case HELP:
@@ -39,6 +42,10 @@ public final class Main {
 			err.println(e.getMessage());
 			shortHelp(parser);
 			return;
+		}
+		catch (Exception e) {
+			err.println("An unhandled error occured.");
+			e.printStackTrace(err);
 		}
 	}
 

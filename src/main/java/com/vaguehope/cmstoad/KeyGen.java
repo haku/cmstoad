@@ -1,15 +1,12 @@
 package com.vaguehope.cmstoad;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.security.Key;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 
-import org.bouncycastle.openssl.PEMWriter;
 import org.kohsuke.args4j.CmdLineException;
 
 public class KeyGen implements CliAction {
@@ -42,26 +39,16 @@ public class KeyGen implements CliAction {
 		keygen.initialize(keysize);
 		KeyPair keyPair = keygen.generateKeyPair();
 
-		File pubF = new File(dir, name + ".public.pem");
-		File privF = new File(dir, name + ".private.pem");
+		File pubF = new File(dir, KeyHelper.publicKeyName(name));
+		File privF = new File(dir, KeyHelper.privateKeyName(name));
 
-		writeKey(keyPair.getPublic(), pubF);
+		KeyHelper.writeKey(keyPair.getPublic(), pubF);
 		out.println("Public key: " + pubF.getPath());
 
-		writeKey(keyPair.getPrivate(), privF);
+		KeyHelper.writeKey(keyPair.getPrivate(), privF);
 		out.println("Private key: " + privF.getPath());
 
 		return keyPair;
-	}
-
-	private static void writeKey (Key k, File f) throws IOException {
-		PEMWriter w = new PEMWriter(new FileWriter(f));
-		try {
-			w.writeObject(k);
-		}
-		finally {
-			w.close();
-		}
 	}
 
 }
