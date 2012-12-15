@@ -34,7 +34,12 @@ public final class KeyHelper {
 	public static <T extends Key> T readKey (File f, Class<T> type) throws IOException {
 		PEMReader r = new PEMReader(new FileReader(f));
 		try {
-			Object obj = r.readObject();
+			Object obj = null;
+			for (int i = 0; i < 100; i++) { // FIXME Bad hack to avoid comments at start of PEM file.
+				obj = r.readObject();
+				if (obj != null) break;
+			}
+			if (obj == null) throw new IOException("Failed to load key '" + f.getAbsolutePath() + "'.");
 			if (type.isAssignableFrom(PrivateKey.class)) {
 				if (obj instanceof KeyPair) return (T) ((KeyPair) obj).getPrivate();
 			}
