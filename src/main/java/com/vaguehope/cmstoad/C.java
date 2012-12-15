@@ -11,7 +11,7 @@ public interface C {
 	String APPNAME = "csmtoad";
 
 	Provider PROVIDER = new BouncyCastleProvider();
-	ASN1ObjectIdentifier DEFAULT_ENCRYPTION_OID = CMSAlgorithm.AES128_CBC;
+	ASN1ObjectIdentifier DEFAULT_ENCRYPTION_OID = CMSAlgorithm.AES256_CBC;
 
 	String ENCRYPTED_FILE_EXT = ".cms";
 	String DECRYPTED_FILE_EXT = ".plain";
