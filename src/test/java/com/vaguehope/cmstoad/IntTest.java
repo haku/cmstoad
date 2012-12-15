@@ -48,9 +48,8 @@ public class IntTest {
 	}
 
 	@Test
-	public void itEncryptesAndDecryptsAFileWithMultipleKeyPairs () throws Exception {
+	public void itEncryptesAndDecryptsFilesWithMultipleKeyPairs () throws Exception {
 		Map<String, PublicKey> publicKeys = new HashMap<String, PublicKey>();
-
 		List<TestKeyPair> keys = new ArrayList<TestKeyPair>();
 		keys.add(new TestKeyPair("desu", 1024, this.dir).putPublicKey(publicKeys));
 		keys.add(new TestKeyPair("foobar", 2048, this.dir).putPublicKey(publicKeys));
