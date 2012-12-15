@@ -64,7 +64,7 @@ public final class KeyHelper {
 
 	public static String keyBaseName (File file) {
 		String name = file.getName();
-		return name.substring(0, name.indexOf("."));
+		return name.substring(0, name.indexOf('.'));
 	}
 
 	public static String publicKeyName (String baseName) {
