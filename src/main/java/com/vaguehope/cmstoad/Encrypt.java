@@ -41,14 +41,15 @@ public class Encrypt implements CliAction {
 			File sinkFile = new File(outputDir, sourceFile.getName() + C.ENCRYPTED_FILE_EXT);
 			if (sinkFile.exists()) throw new IOException("File already exists: " + sinkFile.getAbsolutePath());
 			out.println("Output: " + sinkFile.getPath());
-			encrypt(sourceFile, sinkFile);
+			encrypt(sourceFile, sinkFile, out);
 		}
 	}
 
-	private void encrypt (File sourceFile, File sinkFile) throws IOException, CMSException, OperatorCreationException {
+	private void encrypt (File sourceFile, File sinkFile, PrintStream out) throws IOException, CMSException, OperatorCreationException {
 		CMSEnvelopedDataStreamGenerator cmsGen = new CMSEnvelopedDataStreamGenerator();
-		for (Entry<String, PublicKey> kp : this.keys.entrySet()) {
-			cmsGen.addRecipientInfoGenerator(new JceKeyTransRecipientInfoGenerator(kp.getKey().getBytes(), kp.getValue()).setProvider(C.PROVIDER));
+		for (Entry<String, PublicKey> k : this.keys.entrySet()) {
+			out.println("Public key: " + k.getKey() + " (" + k.getValue().getAlgorithm() + ")");
+			cmsGen.addRecipientInfoGenerator(new JceKeyTransRecipientInfoGenerator(k.getKey().getBytes(), k.getValue()).setProvider(C.PROVIDER));
 		}
 		InputStream source = new FileInputStream(sourceFile);
 		FileOutputStream sink = new FileOutputStream(sinkFile);
