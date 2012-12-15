@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.security.PrivateKey;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -64,16 +65,18 @@ public class Decrypt implements CliAction {
 		try {
 			RecipientInformationStore recipientInfos = cmsPar.getRecipientInfos();
 			Collection<RecipientInformation> recipients = recipientInfos.getRecipients();
+			List<String> subjectKeyIdentifiers = new ArrayList<String>();
 			for (RecipientInformation ri : recipients) {
 				String subjectKeyIdentifier = new String(ri.getRID().getSubjectKeyIdentifier()).trim();
+				subjectKeyIdentifiers.add(subjectKeyIdentifier);
 				PrivateKey key = this.keys.get(subjectKeyIdentifier);
 				if (key != null) {
 					out.println("Decrypt key: " + subjectKeyIdentifier);
 					decrypt(ri, sink, key);
-					break;
+					return;
 				}
-				throw new CmdLineException(null, "No private key specified matches subjectKeyIdentifier:'" + subjectKeyIdentifier + "'.");
 			}
+			throw new CmdLineException(null, "No private key specified matches any subjectKeyIdentifiers: " + subjectKeyIdentifiers + ".");
 		}
 		finally {
 			cmsPar.close();
