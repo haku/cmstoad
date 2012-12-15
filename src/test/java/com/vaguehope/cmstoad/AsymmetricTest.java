@@ -10,7 +10,6 @@ import java.io.OutputStream;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 import java.security.Security;
 import java.util.Collection;
 import java.util.HashMap;
@@ -63,8 +62,8 @@ public class AsymmetricTest {
 		SINK_PLAIN_FILE_1.delete();
 	}
 
-	private static KeyPair generateKeyPair(int keysize, String name, File dir) throws NoSuchAlgorithmException, NoSuchProviderException, IOException {
-		KeyPairGenerator keygen = KeyPairGenerator.getInstance("RSA", "BC");
+	private static KeyPair generateKeyPair(int keysize, String name, File dir) throws NoSuchAlgorithmException, IOException {
+		KeyPairGenerator keygen = KeyPairGenerator.getInstance("RSA", PROVIDER);
 		keygen.initialize(keysize);
 		KeyPair keyPair = keygen.generateKeyPair();
 
