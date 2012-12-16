@@ -20,8 +20,8 @@ public class Args {
 
 	@Option(name = "--name", aliases = "-n", metaVar = "my_key", usage = "name for the generated keypair") private String name;
 	@Option(name = "--keysize", aliases = "-s", metaVar = "4096", usage = "length of the generated private key") private int keysize;
-	@Option(name = "--publickey", aliases = "-u", metaVar = "my_key.public.pem", multiValued = true, usage = "public key to encrypt file to") private List<String> publicKeyPaths;
-	@Option(name = "--privatekey", aliases = "-i", metaVar = "my_key.private.pem", multiValued = true, usage = "private key to decrypt file with") private List<String> privateKeyPaths;
+	@Option(name = "--publickey", aliases = "-u", metaVar = "my_key.public.pem", multiValued = true, usage = "public key(s) to encrypt file to") private List<String> publicKeyPaths;
+	@Option(name = "--privatekey", aliases = "-i", metaVar = "my_key.private.pem", multiValued = true, usage = "private key(s) to decrypt file with") private List<String> privateKeyPaths;
 
 	public Action getAction () {
 		return this.action;
