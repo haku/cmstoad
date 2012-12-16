@@ -10,19 +10,17 @@ mvn clean install assembly:single
 
 == Usage ==
 
- $ java -jar cmstoad.jar args
-
-Run it with action <code>help</code> to get usage help:
  $ java -jar cmstoad.jar help
 
-Generate a key pair called 'foobar' with keylength 2048:
+Generate a key pair called 'foobar' with keylength 2048.
  $ java -jar cmstoad.jar keygen -n foobar -s 2048
 
-Encrypt files against multiple public keys:
+Encrypt files against multiple public keys.
  $ java -jar cmstoad.jar encrypt -u desu.public.pem -u foobar.public.pem file1.doc file2.png
 
-Decrypt files using private key:
+Decrypt files using private key.  Private keys will be compared against names in CMS header until a match is found.
  $ java -jar cmstoad.jar decrypt -i foobar.private.pem file1.doc.cms file2.png.cms
 
-Show header info for encrypted files:
+Show header info for encrypted files.
  $ java -jar cmstoad.jar info file1.doc.cms file2.png.cms
+ 
