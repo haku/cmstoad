@@ -36,7 +36,7 @@ public class KeyGen implements CliAction {
 	}
 
 	private static KeyPair generateKeyPair(int keysize, String name, File dir, PrintStream out) throws NoSuchAlgorithmException, IOException {
-		KeyPairGenerator keygen = KeyPairGenerator.getInstance("RSA", C.PROVIDER);
+		KeyPairGenerator keygen = KeyPairGenerator.getInstance(C.DEFAULT_KEY_TYPE, C.PROVIDER);
 		keygen.initialize(keysize);
 		KeyPair keyPair = keygen.generateKeyPair();
 

@@ -12,6 +12,7 @@ public interface C {
 
 	Provider PROVIDER = new BouncyCastleProvider();
 	ASN1ObjectIdentifier DEFAULT_ENCRYPTION_OID = CMSAlgorithm.AES256_CBC;
+	String DEFAULT_KEY_TYPE = "RSA";
 
 	String ENCRYPTED_FILE_EXT = ".cms";
 	String DECRYPTED_FILE_EXT = ".plain";
