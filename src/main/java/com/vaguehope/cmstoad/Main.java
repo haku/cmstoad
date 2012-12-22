@@ -34,6 +34,9 @@ public final class Main {
 				case INFO:
 					new Info(args).run(out, err);
 					break;
+				case BENCHMARK:
+					new Benchmark().run(out, err);
+					break;
 				case HELP:
 				default:
 					fullHelp(parser, err);

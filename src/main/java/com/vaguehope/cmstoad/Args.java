@@ -81,13 +81,15 @@ public class Args {
 		INFO,
 		KEYGEN,
 		ENCRYPT,
-		DECRYPT;
+		DECRYPT,
+		BENCHMARK;
 		private static final String USAGE = "" +
-				"help    : display this help and exit\n" +
-				"info    : display CMS header info for specified files\n" +
-				"keygen  : generate a key pair\n" +
-				"encrypt : encrypt files(s)\n" +
-				"decrypt : decrypt files(s)";
+				"help      : display this help and exit\n" +
+				"info      : display CMS header info for specified files\n" +
+				"keygen    : generate a key pair\n" +
+				"encrypt   : encrypt files(s)\n" +
+				"decrypt   : decrypt files(s)\n" +
+				"benchmark : run performance benchmark";
 	}
 
 }
