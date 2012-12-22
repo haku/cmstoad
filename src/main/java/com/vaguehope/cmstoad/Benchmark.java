@@ -38,7 +38,7 @@ public class Benchmark implements CliAction {
 	}
 
 	@Override
-	public void run (PrintStream out, PrintStream err) throws NoSuchAlgorithmException, OperatorCreationException, CMSException, IOException {
+	public void run (PrintStream out, PrintStream err) throws OperatorCreationException, CMSException, IOException {
 		Map<String, PublicKey> keys = makeKeyMap();
 		long sourceLength = INITIAL_SOURCE_LENGTH;
 		while (true) {
@@ -69,10 +69,15 @@ public class Benchmark implements CliAction {
 		return (long) ((sourceLength / (double) durationNanos) * NANOS_IN_SECOND);
 	}
 
-	private static Map<String, PublicKey> makeKeyMap () throws NoSuchAlgorithmException {
-		Map<String, PublicKey> keys = new HashMap<String, PublicKey>();
-		keys.put("desu", makeKeyPair().getPublic());
-		return keys;
+	private static Map<String, PublicKey> makeKeyMap () {
+		try {
+			Map<String, PublicKey> keys = new HashMap<String, PublicKey>();
+			keys.put("desu", makeKeyPair().getPublic());
+			return keys;
+		}
+		catch (NoSuchAlgorithmException e) {
+			throw new IllegalStateException(e);
+		}
 	}
 
 	private static KeyPair makeKeyPair () throws NoSuchAlgorithmException {
