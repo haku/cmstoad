@@ -16,6 +16,8 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.output.NullOutputStream;
+import org.bouncycastle.cms.CMSException;
+import org.bouncycastle.operator.OperatorCreationException;
 
 public class Benchmark implements CliAction {
 
@@ -23,6 +25,7 @@ public class Benchmark implements CliAction {
 	private static final int INITIAL_SOURCE_LENGTH = 1024 * 1024;
 	private static final int SOURCE_LENGTH_MULTIPLIER = 2;
 	private static final int TARGET_DURATION_SECONDS = 30;
+	private static final long NANOS_IN_SECOND = 1000000000L;
 
 	private final Random random;
 	private final OutputStream devNull;
@@ -35,7 +38,7 @@ public class Benchmark implements CliAction {
 	}
 
 	@Override
-	public void run (PrintStream out, PrintStream err) throws Exception {
+	public void run (PrintStream out, PrintStream err) throws NoSuchAlgorithmException, OperatorCreationException, CMSException, IOException {
 		Map<String, PublicKey> keys = makeKeyMap();
 		long sourceLength = INITIAL_SOURCE_LENGTH;
 		while (true) {
@@ -63,7 +66,7 @@ public class Benchmark implements CliAction {
 	}
 
 	public static long bytesPerSecond (long sourceLength, long durationNanos) {
-		return (long) ((sourceLength / (double) durationNanos) * 1000000000L);
+		return (long) ((sourceLength / (double) durationNanos) * NANOS_IN_SECOND);
 	}
 
 	private static Map<String, PublicKey> makeKeyMap () throws NoSuchAlgorithmException {
