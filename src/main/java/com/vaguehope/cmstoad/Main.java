@@ -16,6 +16,7 @@ public final class Main {
 		ProviderHelper.initProvider();
 		final PrintStream out = System.out;
 		final PrintStream err = System.err;
+		if (out == null || err == null) throw new AssertionError();
 		final File dir = new File(".");
 		final Args args = new Args();
 		final CmdLineParser parser = new CmdLineParser(args);
