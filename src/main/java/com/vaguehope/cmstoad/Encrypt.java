@@ -64,16 +64,19 @@ public class Encrypt implements CliAction {
 			out.println("Public key: " + k.getKey() + " (" + k.getValue().getAlgorithm() + ")");
 			cmsGen.addRecipientInfoGenerator(new JceKeyTransRecipientInfoGenerator(k.getKey().getBytes(), k.getValue()).setProvider(C.PROVIDER));
 		}
-		encrypt(source, sink, cmsGen);
+		encrypt(source, sink, cmsGen, out);
 	}
 
-	private static void encrypt (InputStream source, OutputStream sink, CMSEnvelopedDataStreamGenerator cmsGen) throws CMSException, IOException {
+	private static void encrypt (InputStream source, OutputStream sink, CMSEnvelopedDataStreamGenerator cmsGen, PrintStream out) throws CMSException, IOException {
 		OutputStream target = cmsGen.open(
 				sink,
 				new JceCMSContentEncryptorBuilder(C.DEFAULT_ENCRYPTION_OID).setProvider(C.PROVIDER).build()
 				);
 		try {
-			IoHelper.copy(source, target);
+			long startTime = System.nanoTime();
+			long sourceLength = IoHelper.copy(source, target);
+			long endTime = System.nanoTime();
+			Benchmark.printBenchmark(sourceLength, "Encrypted", startTime, endTime, out);
 		}
 		finally {
 			target.close();

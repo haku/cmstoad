@@ -72,7 +72,7 @@ public class Decrypt implements CliAction {
 				PrivateKey key = this.keys.get(subjectKeyIdentifier);
 				if (key != null) {
 					out.println("Decrypt key: " + subjectKeyIdentifier);
-					decrypt(ri, sink, key);
+					decrypt(ri, sink, key, out);
 					return;
 				}
 			}
@@ -83,11 +83,14 @@ public class Decrypt implements CliAction {
 		}
 	}
 
-	public void decrypt (RecipientInformation ri, OutputStream sink, PrivateKey key) throws CMSException, IOException {
+	public void decrypt (RecipientInformation ri, OutputStream sink, PrivateKey key, PrintStream out) throws CMSException, IOException {
 		CMSTypedStream cmsTs = ri.getContentStream(new JceKeyTransEnvelopedRecipient(key).setProvider(C.PROVIDER));
 		InputStream source = cmsTs.getContentStream();
 		try {
-			IoHelper.copy(source, sink);
+			long startTime = System.nanoTime();
+			long sourceLength = IoHelper.copy(source, sink);
+			long endTime = System.nanoTime();
+			Benchmark.printBenchmark(sourceLength, "Decrypted", startTime, endTime, out);
 		}
 		finally {
 			IOUtils.closeQuietly(source);

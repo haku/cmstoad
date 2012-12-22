@@ -43,19 +43,27 @@ public class Benchmark implements CliAction {
 			long startTime = System.nanoTime();
 			Encrypt.encrypt(keys, source, this.devNull, this.devNullW);
 			long endTime = System.nanoTime();
+			printBenchmark(sourceLength, "Encrypted", startTime, endTime, out);
 
-			long durationNanos = endTime - startTime;
-			long durationSeconds = TimeUnit.NANOSECONDS.toSeconds(durationNanos);
-			long bytesPerSecond = (long) ((sourceLength / (double) durationNanos) * 1000000000L);
-			System.out.println(MessageFormat.format(
-					"Encrypted {0} in {1} seconds = {2} per second.",
-					FileUtils.byteCountToDisplaySize(sourceLength),
-					String.valueOf(durationSeconds),
-					FileUtils.byteCountToDisplaySize(bytesPerSecond)));
-
-			if (durationSeconds > TARGET_DURATION_SECONDS) break;
+			if (TimeUnit.NANOSECONDS.toSeconds(endTime - startTime) > TARGET_DURATION_SECONDS) break;
 			sourceLength *= SOURCE_LENGTH_MULTIPLIER;
 		}
+	}
+
+	public static void printBenchmark (long sourceLength, String action, long startTime, long endTime, PrintStream out) {
+		long durationNanos = endTime - startTime;
+		long durationSeconds = TimeUnit.NANOSECONDS.toSeconds(durationNanos);
+		long bytesPerSecond = bytesPerSecond(sourceLength, durationNanos);
+		out.println(MessageFormat.format(
+				"{0} {1} in {2} seconds = {3} per second.",
+				action,
+				FileUtils.byteCountToDisplaySize(sourceLength),
+				String.valueOf(durationSeconds),
+				FileUtils.byteCountToDisplaySize(bytesPerSecond)));
+	}
+
+	public static long bytesPerSecond (long sourceLength, long durationNanos) {
+		return (long) ((sourceLength / (double) durationNanos) * 1000000000L);
 	}
 
 	private static Map<String, PublicKey> makeKeyMap () throws NoSuchAlgorithmException {
