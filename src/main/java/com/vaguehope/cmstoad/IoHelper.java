@@ -6,7 +6,7 @@ import java.io.OutputStream;
 
 public final class IoHelper {
 
-	public IoHelper () {
+	private IoHelper () {
 		throw new AssertionError();
 	}
 
