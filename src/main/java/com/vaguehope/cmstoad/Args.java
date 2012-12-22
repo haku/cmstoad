@@ -40,7 +40,7 @@ public class Args {
 	}
 
 	public int getKeysize (boolean required) throws CmdLineException {
-		if (required && (this.keysize < 1024)) throw new CmdLineException(null, "Keysize is required and must be at least 1024.");
+		if (required && (this.keysize < C.MIN_KEY_LENGTH)) throw new CmdLineException(null, "Keysize is required and must be at least 1024.");
 		return this.keysize;
 	}
 
