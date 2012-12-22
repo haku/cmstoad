@@ -42,20 +42,15 @@ public class Encrypt implements CliAction {
 			File sinkFile = new File(this.dir, sourceFile.getName() + C.ENCRYPTED_FILE_EXT);
 			if (sinkFile.exists()) throw new IOException("File already exists: " + sinkFile.getAbsolutePath());
 			out.println("Output: " + sinkFile.getPath());
-			encrypt(sourceFile, sinkFile, out);
+			encrypt(this.keys, sourceFile, sinkFile, out);
 		}
 	}
 
-	private void encrypt (File sourceFile, File sinkFile, PrintStream out) throws IOException, CMSException, OperatorCreationException {
-		CMSEnvelopedDataStreamGenerator cmsGen = new CMSEnvelopedDataStreamGenerator();
-		for (Entry<String, PublicKey> k : this.keys.entrySet()) {
-			out.println("Public key: " + k.getKey() + " (" + k.getValue().getAlgorithm() + ")");
-			cmsGen.addRecipientInfoGenerator(new JceKeyTransRecipientInfoGenerator(k.getKey().getBytes(), k.getValue()).setProvider(C.PROVIDER));
-		}
+	public static void encrypt (Map<String, PublicKey> keys, File sourceFile, File sinkFile, PrintStream out) throws IOException, CMSException, OperatorCreationException {
 		InputStream source = new FileInputStream(sourceFile);
 		FileOutputStream sink = new FileOutputStream(sinkFile);
 		try {
-			encrypt(source, sink, cmsGen);
+			encrypt(keys, source, sink, out);
 		}
 		finally {
 			IOUtils.closeQuietly(source);
@@ -63,17 +58,22 @@ public class Encrypt implements CliAction {
 		}
 	}
 
-	public void encrypt (InputStream source, OutputStream sink, CMSEnvelopedDataStreamGenerator cmsGen) throws CMSException, IOException {
+	public static void encrypt (Map<String, PublicKey> keys, InputStream source, OutputStream sink, PrintStream out) throws OperatorCreationException, CMSException, IOException {
+		CMSEnvelopedDataStreamGenerator cmsGen = new CMSEnvelopedDataStreamGenerator();
+		for (Entry<String, PublicKey> k : keys.entrySet()) {
+			out.println("Public key: " + k.getKey() + " (" + k.getValue().getAlgorithm() + ")");
+			cmsGen.addRecipientInfoGenerator(new JceKeyTransRecipientInfoGenerator(k.getKey().getBytes(), k.getValue()).setProvider(C.PROVIDER));
+		}
+		encrypt(source, sink, cmsGen);
+	}
+
+	private static void encrypt (InputStream source, OutputStream sink, CMSEnvelopedDataStreamGenerator cmsGen) throws CMSException, IOException {
 		OutputStream target = cmsGen.open(
 				sink,
 				new JceCMSContentEncryptorBuilder(C.DEFAULT_ENCRYPTION_OID).setProvider(C.PROVIDER).build()
 				);
 		try {
-			byte[] buffer = new byte[C.DEFAULT_COPY_BUFFER_SIZE];
-			int bytesRead;
-			while ((bytesRead = source.read(buffer)) != -1) {
-				target.write(buffer, 0, bytesRead);
-			}
+			IoHelper.copy(source, target);
 		}
 		finally {
 			target.close();

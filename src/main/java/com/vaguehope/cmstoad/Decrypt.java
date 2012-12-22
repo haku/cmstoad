@@ -87,11 +87,7 @@ public class Decrypt implements CliAction {
 		CMSTypedStream cmsTs = ri.getContentStream(new JceKeyTransEnvelopedRecipient(key).setProvider(C.PROVIDER));
 		InputStream source = cmsTs.getContentStream();
 		try {
-			byte[] buffer = new byte[C.DEFAULT_COPY_BUFFER_SIZE];
-			int bytesRead;
-			while ((bytesRead = source.read(buffer)) != -1) {
-				sink.write(buffer, 0, bytesRead);
-			}
+			IoHelper.copy(source, sink);
 		}
 		finally {
 			IOUtils.closeQuietly(source);
