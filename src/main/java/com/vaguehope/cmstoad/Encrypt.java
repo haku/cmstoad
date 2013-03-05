@@ -48,7 +48,7 @@ public class Encrypt implements CliAction {
 
 	public static void encrypt (Map<String, PublicKey> keys, File sourceFile, File sinkFile, PrintStream out) throws IOException, CMSException, OperatorCreationException {
 		InputStream source = new FileInputStream(sourceFile);
-		FileOutputStream sink = new FileOutputStream(sinkFile);
+		OutputStream sink = new FileOutputStream(sinkFile);
 		try {
 			encrypt(keys, source, sink, out);
 		}

@@ -50,7 +50,7 @@ public class Decrypt implements CliAction {
 
 	private void decrypt (File sourceFile, File sinkFile, PrintStream out) throws IOException, CMSException, CmdLineException {
 		InputStream source = new FileInputStream(sourceFile);
-		FileOutputStream sink = new FileOutputStream(sinkFile);
+		OutputStream sink = new FileOutputStream(sinkFile);
 		try {
 			decrypt(source, sink, out);
 		}
