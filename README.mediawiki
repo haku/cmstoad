@@ -18,8 +18,14 @@ Generate a key pair called 'foobar' with keylength 2048.
 Encrypt files against multiple public keys.
  $ java -jar cmstoad.jar encrypt -u desu.public.pem -u foobar.public.pem file1.doc file2.png
 
+Encrypt from stdin.
+ $ java -jar cmstoad.jar encrypt -u desu.public.pem -- -
+
 Decrypt files using private key.  Private keys will be compared against names in CMS header until a match is found.
  $ java -jar cmstoad.jar decrypt -i foobar.private.pem file1.doc.cms file2.png.cms
+
+Decrypt from stdin.
+ $ java -jar cmstoad.jar decrypt -i foobar.private.pem -- -
 
 Show header info for encrypted files.
  $ java -jar cmstoad.jar info file1.doc.cms file2.png.cms
