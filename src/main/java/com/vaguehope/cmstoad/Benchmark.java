@@ -38,7 +38,7 @@ public class Benchmark implements CliAction {
 	}
 
 	@Override
-	public void run (PrintStream out, PrintStream err) throws OperatorCreationException, CMSException, IOException {
+	public void run (PrintStream err) throws OperatorCreationException, CMSException, IOException {
 		Map<String, PublicKey> keys = makeKeyMap();
 		long sourceLength = INITIAL_SOURCE_LENGTH;
 		while (true) {
@@ -46,18 +46,18 @@ public class Benchmark implements CliAction {
 			long startTime = System.nanoTime();
 			Encrypt.encrypt(keys, source, this.devNull, this.devNullW);
 			long endTime = System.nanoTime();
-			printBenchmark(sourceLength, "Encrypted", startTime, endTime, out);
+			printBenchmark(sourceLength, "Encrypted", startTime, endTime, err);
 
 			if (TimeUnit.NANOSECONDS.toSeconds(endTime - startTime) > TARGET_DURATION_SECONDS) break;
 			sourceLength *= SOURCE_LENGTH_MULTIPLIER;
 		}
 	}
 
-	public static void printBenchmark (long sourceLength, String action, long startTime, long endTime, PrintStream out) {
+	public static void printBenchmark (long sourceLength, String action, long startTime, long endTime, PrintStream err) {
 		long durationNanos = endTime - startTime;
 		long durationSeconds = TimeUnit.NANOSECONDS.toSeconds(durationNanos);
 		long bytesPerSecond = bytesPerSecond(sourceLength, durationNanos);
-		out.println(MessageFormat.format(
+		err.println(MessageFormat.format(
 				"{0} {1} in {2} seconds = {3} per second.",
 				action,
 				FileUtils.byteCountToDisplaySize(sourceLength),

@@ -30,7 +30,6 @@ public class IntTest {
 
 	@Rule public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
-	protected static final PrintStream OUT = System.out;
 	protected static final PrintStream ERR = System.err;
 
 	private File dir;
@@ -55,7 +54,7 @@ public class IntTest {
 		keys.add(new TestKeyPair("foobar", 2048, this.dir).putPublicKey(publicKeys));
 
 		List<File> sources = makeRandomFiles(SOURCE_FILE_COUNT, SOURCE_FILE_MIN_LENGTH);
-		new Encrypt(publicKeys, sources, this.dir).run(OUT, ERR);
+		new Encrypt(publicKeys, sources, this.dir).run(ERR);
 
 		for (TestKeyPair kp : keys) {
 			List<File> crypted = new ArrayList<File>();
@@ -63,7 +62,7 @@ public class IntTest {
 				crypted.add(encryptedFileFromSource(source));
 				decryptedFileFromSource(source).delete();
 			}
-			new Decrypt(kp.asPrivateKeyMap(), crypted, this.dir).run(OUT, ERR);
+			new Decrypt(kp.asPrivateKeyMap(), crypted, this.dir).run(ERR);
 
 			for (File source : sources) {
 				assertFilesEqual(source, decryptedFileFromSource(source));
@@ -119,7 +118,7 @@ public class IntTest {
 
 		public TestKeyPair (String name, int keysize, File dir) throws IOException {
 			this.name = name;
-			new KeyGen(name, keysize, dir).run(OUT, ERR);
+			new KeyGen(name, keysize, dir).run(ERR);
 			this.publicKey = KeyHelper.readKey(new File(dir, KeyHelper.publicKeyName(name)), PublicKey.class);
 			this.privateKey = KeyHelper.readKey(new File(dir, KeyHelper.privateKeyName(name)), PrivateKey.class);
 		}

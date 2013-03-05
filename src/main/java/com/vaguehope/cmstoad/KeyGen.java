@@ -26,16 +26,16 @@ public class KeyGen implements CliAction {
 	}
 
 	@Override
-	public void run (PrintStream out, PrintStream err) throws IOException {
+	public void run (PrintStream err) throws IOException {
 		try {
-			generateKeyPair(this.keysize, this.name, this.dir, out);
+			generateKeyPair(this.keysize, this.name, this.dir, err);
 		}
 		catch (NoSuchAlgorithmException e) {
 			throw new IllegalStateException(e);
 		}
 	}
 
-	private static KeyPair generateKeyPair(int keysize, String name, File dir, PrintStream out) throws NoSuchAlgorithmException, IOException {
+	private static KeyPair generateKeyPair(int keysize, String name, File dir, PrintStream err) throws NoSuchAlgorithmException, IOException {
 		KeyPairGenerator keygen = KeyPairGenerator.getInstance(C.DEFAULT_KEY_TYPE, C.PROVIDER);
 		keygen.initialize(keysize);
 		KeyPair keyPair = keygen.generateKeyPair();
@@ -44,10 +44,10 @@ public class KeyGen implements CliAction {
 		File privF = new File(dir, KeyHelper.privateKeyName(name));
 
 		KeyHelper.writeKey(keyPair.getPublic(), pubF);
-		out.println("Public key: " + pubF.getPath());
+		err.println("Public key: " + pubF.getPath());
 
 		KeyHelper.writeKey(keyPair.getPrivate(), privF);
-		out.println("Private key: " + privF.getPath());
+		err.println("Private key: " + privF.getPath());
 
 		return keyPair;
 	}

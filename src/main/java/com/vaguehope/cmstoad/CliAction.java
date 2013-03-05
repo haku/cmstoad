@@ -4,6 +4,6 @@ import java.io.PrintStream;
 
 public interface CliAction {
 
-	void run (PrintStream out, PrintStream err) throws Exception;
+	void run (PrintStream err) throws Exception;
 
 }

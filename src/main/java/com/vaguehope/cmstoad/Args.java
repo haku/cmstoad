@@ -12,11 +12,12 @@ import java.util.Map;
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.Option;
+import org.kohsuke.args4j.spi.StopOptionHandler;
 
 public class Args {
 
 	@Argument(index = 0, required = true, metaVar = "<action>", usage = Action.USAGE) private Action action;
-	@Argument(index = 1, multiValued = true, metaVar = "FILE") private List<String> filePaths;
+	@Argument(index = 1, multiValued = true, metaVar = "FILE") @Option(name = "--", handler = StopOptionHandler.class) private List<String> filePaths;
 
 	@Option(name = "--name", aliases = "-n", metaVar = "my_key", usage = "name for the generated keypair") private String name;
 	@Option(name = "--keysize", aliases = "-s", metaVar = "4096", usage = "length of the generated private key") private int keysize;
@@ -70,7 +71,7 @@ public class Args {
 
 	private static void checkFilesExist (List<File> files) throws CmdLineException {
 		for (File file : files) {
-			if (!file.exists()) {
+			if (!IoHelper.fileExists(file)) {
 				throw new CmdLineException(null, "File not found: " + file.getAbsolutePath());
 			}
 		}

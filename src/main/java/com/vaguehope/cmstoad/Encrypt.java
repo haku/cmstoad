@@ -1,8 +1,6 @@
 package com.vaguehope.cmstoad;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -37,20 +35,20 @@ public class Encrypt implements CliAction {
 	}
 
 	@Override
-	public void run (PrintStream out, PrintStream err) throws IOException, CMSException, OperatorCreationException {
+	public void run (PrintStream err) throws IOException, CMSException, OperatorCreationException {
 		for (File sourceFile : this.sourceFiles) {
 			File sinkFile = new File(this.dir, sourceFile.getName() + C.ENCRYPTED_FILE_EXT);
 			if (sinkFile.exists()) throw new IOException("File already exists: " + sinkFile.getAbsolutePath());
-			out.println("Output: " + sinkFile.getPath());
-			encrypt(this.keys, sourceFile, sinkFile, out);
+			err.println("Output: " + sinkFile.getPath());
+			encrypt(this.keys, sourceFile, sinkFile, err);
 		}
 	}
 
-	public static void encrypt (Map<String, PublicKey> keys, File sourceFile, File sinkFile, PrintStream out) throws IOException, CMSException, OperatorCreationException {
-		InputStream source = new FileInputStream(sourceFile);
-		OutputStream sink = new FileOutputStream(sinkFile);
+	public static void encrypt (Map<String, PublicKey> keys, File sourceFile, File sinkFile, PrintStream err) throws IOException, CMSException, OperatorCreationException {
+		InputStream source = IoHelper.resolveInputFile(sourceFile);
+		OutputStream sink = IoHelper.resolveOutputFile(sinkFile);
 		try {
-			encrypt(keys, source, sink, out);
+			encrypt(keys, source, sink, err);
 		}
 		finally {
 			IOUtils.closeQuietly(source);
@@ -58,16 +56,16 @@ public class Encrypt implements CliAction {
 		}
 	}
 
-	public static void encrypt (Map<String, PublicKey> keys, InputStream source, OutputStream sink, PrintStream out) throws OperatorCreationException, CMSException, IOException {
+	public static void encrypt (Map<String, PublicKey> keys, InputStream source, OutputStream sink, PrintStream err) throws OperatorCreationException, CMSException, IOException {
 		CMSEnvelopedDataStreamGenerator cmsGen = new CMSEnvelopedDataStreamGenerator();
 		for (Entry<String, PublicKey> k : keys.entrySet()) {
-			out.println("Public key: " + k.getKey() + " (" + k.getValue().getAlgorithm() + ")");
+			err.println("Public key: " + k.getKey() + " (" + k.getValue().getAlgorithm() + ")");
 			cmsGen.addRecipientInfoGenerator(new JceKeyTransRecipientInfoGenerator(k.getKey().getBytes(), k.getValue()).setProvider(C.PROVIDER));
 		}
-		encrypt(source, sink, cmsGen, out);
+		encrypt(source, sink, cmsGen, err);
 	}
 
-	private static void encrypt (InputStream source, OutputStream sink, CMSEnvelopedDataStreamGenerator cmsGen, PrintStream out) throws CMSException, IOException {
+	private static void encrypt (InputStream source, OutputStream sink, CMSEnvelopedDataStreamGenerator cmsGen, PrintStream err) throws CMSException, IOException {
 		OutputStream target = cmsGen.open(
 				sink,
 				new JceCMSContentEncryptorBuilder(C.DEFAULT_ENCRYPTION_OID).setProvider(C.PROVIDER).build()
@@ -76,7 +74,7 @@ public class Encrypt implements CliAction {
 			long startTime = System.nanoTime();
 			long sourceLength = IoHelper.copy(source, target);
 			long endTime = System.nanoTime();
-			Benchmark.printBenchmark(sourceLength, "Encrypted", startTime, endTime, out);
+			Benchmark.printBenchmark(sourceLength, "Encrypted", startTime, endTime, err);
 		}
 		finally {
 			target.close();

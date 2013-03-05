@@ -17,15 +17,13 @@ public final class Main {
 
 	public static void main (String[] rawArgs) {
 		ProviderHelper.initProvider();
-		final PrintStream out = System.out;
 		final PrintStream err = System.err;
-		if (out == null || err == null) throw new AssertionError(); // NOSONAR Check this to prevent other parts of Sonar complaining about null pointer dereference.
 		final File dir = new File(".");
 		final Args args = new Args();
 		final CmdLineParser parser = new CmdLineParser(args);
 		try {
 			parser.parseArgument(rawArgs);
-			run(args, parser, dir, out, err);
+			run(args, parser, dir, err);
 		}
 		catch (CmdLineException e) {
 			err.println(e.getMessage());
@@ -38,22 +36,22 @@ public final class Main {
 		}
 	}
 
-	private static void run (Args args, CmdLineParser parser, File dir, PrintStream out, PrintStream err) throws CmdLineException, IOException, OperatorException, CMSException {
+	private static void run (Args args, CmdLineParser parser, File dir, PrintStream err) throws CmdLineException, IOException, OperatorException, CMSException {
 		switch (args.getAction()) {
 			case KEYGEN:
-				new KeyGen(args, dir).run(out, err);
+				new KeyGen(args, dir).run(err);
 				break;
 			case ENCRYPT:
-				new Encrypt(args, dir).run(out, err);
+				new Encrypt(args, dir).run(err);
 				break;
 			case DECRYPT:
-				new Decrypt(args, dir).run(out, err);
+				new Decrypt(args, dir).run(err);
 				break;
 			case INFO:
-				new Info(args).run(out, err);
+				new Info(args).run(err);
 				break;
 			case BENCHMARK:
-				new Benchmark().run(out, err);
+				new Benchmark().run(err);
 				break;
 			case HELP:
 			default:
